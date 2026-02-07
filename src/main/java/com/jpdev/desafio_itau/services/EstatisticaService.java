@@ -1,58 +1,62 @@
 package com.jpdev.desafio_itau.services;
 
+import com.jpdev.desafio_itau.config.EstatisticaProperties;
 import com.jpdev.desafio_itau.dto.EstatisticaResponse;
 import com.jpdev.desafio_itau.models.Transacao;
 import com.jpdev.desafio_itau.repositories.TransacaoRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StopWatch;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.OffsetDateTime;
 import java.util.List;
 
 @Service
 public class EstatisticaService {
-    private final TransacaoRepository repository;
+    // Logger para exibir as mensagens de erro, informação e etc...
+    private static final Logger log = LoggerFactory.getLogger(EstatisticaService.class);
 
-    public EstatisticaService(TransacaoRepository repository) {
+    private final TransacaoRepository repository;
+    private final EstatisticaProperties properties;
+
+    public EstatisticaService(TransacaoRepository repository,
+                              EstatisticaProperties properties) {
         this.repository = repository;
+        this.properties = properties;
     }
 
     public EstatisticaResponse obterEstatisticas() {
+        // Marca o tempo decorrido para finalizar essa operação.
+        StopWatch watch = new StopWatch();
+
+        log.info("Iniciando calculo de estatisticas com o limite de {} segundos.", properties.limiteSegundos());
+        watch.start();
+
         List<Transacao> transacoes = repository.obterTransacoes();
 
-        List<Transacao> transacoes60Seconds = transacoes.stream()
-                .filter(tr -> tr.dataHora().isAfter(OffsetDateTime.now().minusSeconds(60)))
-                .toList();
+        var summary = transacoes.stream()
+                .filter(t -> t.dataHora()
+                        .isAfter(OffsetDateTime
+                            .now()
+                            .minusSeconds(properties.limiteSegundos())))
+                .mapToDouble(t -> t.valor().doubleValue())
+                .summaryStatistics();
 
-        if (!transacoes60Seconds.isEmpty()) {
-            Long count = (long) transacoes60Seconds.size();
-
-            Double sum = transacoes60Seconds.stream()
-                    .mapToDouble(transacao -> transacao.valor().doubleValue())
-                    .sum();
-
-            Double avg = transacoes60Seconds.stream()
-                    .map(Transacao::valor)
-                    .reduce(BigDecimal.ZERO, BigDecimal::add)
-                    .divide(BigDecimal.valueOf(transacoes60Seconds.size()), RoundingMode.HALF_UP)
-                    .doubleValue();
-
-            Double min = transacoes60Seconds.stream()
-                    .map(Transacao::valor)
-                    .min(BigDecimal::compareTo)
-                    .map(BigDecimal::doubleValue)
-                    .orElse(0.0);
-
-            Double max = transacoes60Seconds.stream()
-                    .map(Transacao::valor)
-                    .max(BigDecimal::compareTo)
-                    .map(BigDecimal::doubleValue)
-                    .orElse(0.0);
-
-            return new EstatisticaResponse(count, sum, avg, min, max);
+        if (summary.getCount() == 0) {
+            log.info("Nenhuma transação encontrada nos últimos {} segundos. Retornando estatísticas zeradas.",
+                    properties.limiteSegundos());
+            return new EstatisticaResponse(0L, 0.0, 0.0, 0.0, 0.0);
         }
+        watch.stop();
+        log.info("Tempo decorrido para calcular as estatisticas das transações: {} ms", watch.getTotalTimeMillis());
 
-        return null;
+        return new EstatisticaResponse(
+                summary.getCount(),
+                summary.getSum(),
+                summary.getAverage(),
+                summary.getMin(),
+                summary.getMax()
+        );
     }
 }
