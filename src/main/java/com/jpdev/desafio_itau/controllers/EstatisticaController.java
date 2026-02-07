@@ -2,6 +2,8 @@ package com.jpdev.desafio_itau.controllers;
 
 import com.jpdev.desafio_itau.dto.EstatisticaResponse;
 import com.jpdev.desafio_itau.services.EstatisticaService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/estatistica")
 public class EstatisticaController {
+    private static final Logger log = LoggerFactory.getLogger(EstatisticaController.class);
     private final EstatisticaService service;
 
     public EstatisticaController(EstatisticaService service) {
@@ -19,6 +22,8 @@ public class EstatisticaController {
 
     @GetMapping
     public ResponseEntity<EstatisticaResponse> obterEstatisticas() {
+        log.info("Requisição GET recebida para o endpoint /estatistica");
+
         return ResponseEntity.status(HttpStatus.OK)
                 .body(service.obterEstatisticas());
     }
