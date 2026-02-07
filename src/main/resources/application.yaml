@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: desafio-itau
+
+transacao:
+  limite-segundos: 60
