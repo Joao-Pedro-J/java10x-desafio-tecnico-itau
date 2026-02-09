@@ -1,6 +1,6 @@
 package com.jpdev.desafio_itau.services;
 
-import com.jpdev.desafio_itau.config.EstatisticaProperties;
+import com.jpdev.desafio_itau.config.properties.EstatisticaProperties;
 import com.jpdev.desafio_itau.dto.EstatisticaResponse;
 import com.jpdev.desafio_itau.models.Transacao;
 import com.jpdev.desafio_itau.repositories.TransacaoRepository;
