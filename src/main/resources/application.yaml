@@ -4,3 +4,17 @@ spring:
 
 transacao:
   limite-segundos: 60
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: 'health,metrics,prometheus'
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
