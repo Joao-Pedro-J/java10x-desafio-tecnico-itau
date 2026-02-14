@@ -1,7 +1,7 @@
 package com.jpdev.desafio_itau.controllers;
 
 import com.jpdev.desafio_itau.docs.EstatisticaControllerDoc;
-import com.jpdev.desafio_itau.dto.EstatisticaResponse;
+import com.jpdev.desafio_itau.controllers.dto.EstatisticaResponse;
 import com.jpdev.desafio_itau.services.EstatisticaService;
 
 import org.slf4j.Logger;

@@ -1,4 +1,4 @@
-package com.jpdev.desafio_itau.dto;
+package com.jpdev.desafio_itau.controllers.dto;
 
 public record EstatisticaResponse(
         Long count,

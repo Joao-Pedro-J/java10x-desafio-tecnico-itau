@@ -1,4 +1,4 @@
-package com.jpdev.desafio_itau.controllers.handler;
+package com.jpdev.desafio_itau.exceptions.handler;
 
 import com.jpdev.desafio_itau.exceptions.DateTimeFutureException;
 import org.slf4j.Logger;

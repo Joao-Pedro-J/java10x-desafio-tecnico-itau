@@ -1,7 +1,7 @@
 package com.jpdev.desafio_itau.services;
 
 import com.jpdev.desafio_itau.config.properties.EstatisticaProperties;
-import com.jpdev.desafio_itau.dto.EstatisticaResponse;
+import com.jpdev.desafio_itau.controllers.dto.EstatisticaResponse;
 import com.jpdev.desafio_itau.models.Transacao;
 import com.jpdev.desafio_itau.repositories.TransacaoRepository;
 import org.slf4j.Logger;

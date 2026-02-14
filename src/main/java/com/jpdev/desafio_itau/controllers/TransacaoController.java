@@ -1,7 +1,7 @@
 package com.jpdev.desafio_itau.controllers;
 
 import com.jpdev.desafio_itau.docs.TransacaoControllerDoc;
-import com.jpdev.desafio_itau.dto.TransacaoRequest;
+import com.jpdev.desafio_itau.controllers.dto.TransacaoRequest;
 import com.jpdev.desafio_itau.services.TransacaoService;
 
 import jakarta.validation.Valid;
